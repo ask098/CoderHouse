@@ -14,6 +14,7 @@ RUN pip install requests psycopg2-binary python-dotenv pandas
 
 # copy code to container
 COPY main.py .
+COPY .env .
 #COPY scr /src
 
 
