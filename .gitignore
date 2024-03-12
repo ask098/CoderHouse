@@ -36,6 +36,13 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Airflow Logs
+scheduler/
+airflow_docker/logs/
+dag_id=tutorial/
+dag_processor_manager/
+
+
 # Unit test / coverage reports
 htmlcov/
 .tox/

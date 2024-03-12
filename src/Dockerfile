@@ -6,16 +6,22 @@ LABEL author="camiloc"
 #ENV ENVIRONMENT_NAME=production
 #ENV HOME=/opt/airflow
 
+# copy code to container
+#COPY src/airflow_docker/dags/nba_etl.py .
+#COPY src/airflow_docker/dags/.env .
+
+COPY . usr/src/app
+
+
+
 # work directory
-WORKDIR /app
+#WORKDIR /app
+WORKDIR /usr/src/app
 
 # Dependecies installing
 RUN pip install requests psycopg2-binary python-dotenv pandas
 
-# copy code to container
-COPY main.py .
-COPY .env .
-#COPY scr /src
+
 
 
 # run script

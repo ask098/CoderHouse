@@ -1,10 +1,3 @@
-# instalacion bibliotecas
-#!pip install requests
-#!pip install psycopg2
-#!pip install pandas
-# pip install python-dotenv
-
-
 #imports
 import http.client
 import requests
@@ -15,18 +8,17 @@ from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 
-
-def extract_and_load_data():
-  #loading dot env variables
-  load_dotenv()
-  RAPID_API_KEY = os.getenv("RAPID_API_KEY")
-  DATABASE = os.getenv("DATABASE")
-  DB_USER = os.getenv("DB_USER")
-  DB_PASSWORD = os.getenv("DB_PASSWORD")
-  DB_HOST = os.getenv("DB_HOST")
-  DB_PORT = os.getenv("DB_PORT")
+#loading dot env variables
+load_dotenv()
+RAPID_API_KEY = os.getenv("RAPID_API_KEY")
+DATABASE = os.getenv("DATABASE")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 
 
+def get_data():
   # API config
   # API for NBA Games results
 
@@ -59,10 +51,9 @@ def extract_and_load_data():
 
   # convert json data into python dictionary
   datos_json = response.json()
-  print (datos_json)
-
-
-
+  # print (datos_json)
+  
+def connect_database():
   # driver implementation - using psycog2
 
   try:
@@ -72,7 +63,8 @@ def extract_and_load_data():
     print("conexion fallida")
     print(f"Error: {e}")
     
-    
+  
+def create_table():
   #Create table
   createTableGames = """
       CREATE TABLE IF NOT EXISTS cmlocastro20_coderhouse.nba_games (
@@ -129,7 +121,7 @@ def extract_and_load_data():
   #cursor.execute("Truncate table cmlocastro20_coderhouse.nba_games")
   #conn.commit()
 
-
+def insert_data():
   # convert data into dataframe to easy handle
   df = pd.DataFrame(datos_json['response'])
 
@@ -138,9 +130,6 @@ def extract_and_load_data():
 
   # fill null values with default values if apply
   df.fillna(0, inplace=True)
-
-
-
 
   # preparing data to insert
   data_to_insert = []
@@ -187,12 +176,13 @@ def extract_and_load_data():
   insert_query = """
       INSERT INTO cmlocastro20_coderhouse.nba_games VALUES %s;
   """
-
+  
   # execute insert
   execute_values(cursor, insert_query, data_to_insert)
   conn.commit()
-
-
+  
+  
+def disconnect_database():
   #Dissconect db
   try:
     cursor.close()
@@ -201,11 +191,4 @@ def extract_and_load_data():
   except Exception as e:
     print("error en desconexion")
     print(f"Error: {e}")
-
-
-# call to function to execute process
-extract_and_load_data()
-
-  
-
 
