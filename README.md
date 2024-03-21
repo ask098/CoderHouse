@@ -37,6 +37,7 @@ create table in DB
 clean and insert data into DB
 Logout from DB
 ```
+![dag Screenshot](dag_nba.png "dag screenshot")
 
 ## Build with 🛠️
 
