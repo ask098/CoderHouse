@@ -17,8 +17,12 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 
+conn = None
+datos_json = None
+cursos = None
 
 def get_data():
+  global datos_json
   # API config
   # API for NBA Games results
 
@@ -52,10 +56,11 @@ def get_data():
   # convert json data into python dictionary
   datos_json = response.json()
   # print (datos_json)
-  
+
 def connect_database():
   # driver implementation - using psycog2
-
+  
+  global conn
   try:
     conn = psycopg2.connect(database=DATABASE, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port = DB_PORT)
     print("conexion exitosa")
@@ -65,6 +70,7 @@ def connect_database():
     
   
 def create_table():
+  global cursor
   #Create table
   createTableGames = """
       CREATE TABLE IF NOT EXISTS cmlocastro20_coderhouse.nba_games (
@@ -121,7 +127,10 @@ def create_table():
   #cursor.execute("Truncate table cmlocastro20_coderhouse.nba_games")
   #conn.commit()
 
+
 def insert_data():
+  global datos_json
+  global cursor
   # convert data into dataframe to easy handle
   df = pd.DataFrame(datos_json['response'])
 
@@ -183,6 +192,7 @@ def insert_data():
   
   
 def disconnect_database():
+  global cursor
   #Dissconect db
   try:
     cursor.close()
@@ -191,4 +201,9 @@ def disconnect_database():
   except Exception as e:
     print("error en desconexion")
     print(f"Error: {e}")
-
+    
+get_data()
+connect_database()
+create_table()
+insert_data()
+disconnect_database()
